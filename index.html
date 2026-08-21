@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>컴퓨터 기초 탄탄! 한글&엑셀</title>
+<style>
+  :root{--bg:#f5f7fb;--card:#fff;--text:#20242b;--muted:#687080;--line:#dfe4ec;--accent:#3559a8;--accent-soft:#eaf0ff;--success:#2f7d4a}
+  *{box-sizing:border-box} body{margin:0;font-family:"Malgun Gothic","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)}
+  .wrap{max-width:1180px;margin:0 auto;padding:26px 18px 60px}
+  header,section{background:var(--card);border-radius:22px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+  header{padding:34px 36px;margin-bottom:22px} section{padding:28px;margin:20px 0}
+  .badge{display:inline-block;background:var(--accent-soft);color:var(--accent);padding:8px 14px;border-radius:999px;font-weight:700;font-size:14px}
+  h1{margin:14px 0 8px;font-size:34px} .sub,.desc{color:var(--muted);line-height:1.7}
+  .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+  .quick a{text-decoration:none;color:inherit;background:#f8f9fc;border:2px solid var(--line);border-radius:16px;padding:18px;text-align:center;font-weight:700;font-size:17px}
+  .today-grid,.practice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  .today-card,.practice,.class-card{border:2px solid var(--line);border-radius:16px;padding:20px;background:#fafbfc}
+  .btn{display:inline-block;text-decoration:none;border-radius:13px;padding:14px 19px;margin:6px 6px 0 0;font-size:16px;font-weight:700;background:var(--accent);color:white}
+  .btn.secondary{background:#eceff4;color:#222}.btn.success{background:var(--success)}
+  .classes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .class-card strong{display:block;font-size:18px;margin-bottom:7px}.class-card span{color:var(--muted);font-size:14px}.class-card a{display:inline-block;margin-top:12px;color:var(--accent);text-decoration:none;font-weight:700}
+  .upload-box{border:3px dashed #aeb7c6;border-radius:18px;padding:30px;text-align:center;background:#fafbfc}
+  .notice{background:#fff8e8;border:2px solid #ead7a0;border-radius:16px;padding:18px;line-height:1.8}
+  footer{text-align:center;color:var(--muted);padding-top:18px;font-size:14px}
+  @media(max-width:850px){.quick{grid-template-columns:repeat(2,1fr)}.today-grid,.practice-grid{grid-template-columns:1fr}.classes{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){h1{font-size:27px}.classes{grid-template-columns:1fr}header,section{padding:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="badge">안산 스마트허브복합문화센터</span>
+  <h1>💻 컴퓨터 기초 탄탄! 한글&엑셀</h1>
+  <p class="sub">수업자료를 받고, 예제를 연습하고, 완성한 파일을 제출하는 수업용 홈페이지입니다.<br>강사 강은영 · 총 12차시</p>
+  <div class="quick">
+    <a href="#today">📚 오늘의 수업</a>
+    <a href="#materials">📥 전체 자료</a>
+    <a href="#upload">📤 파일 제출</a>
+    <a href="#practice">🎮 연습실</a>
+  </div>
+</header>
+
+<section id="today">
+  <h2>📚 오늘의 수업</h2>
+  <p class="desc">오늘 사용할 자료와 실습파일은 여기에서 바로 열 수 있습니다.</p>
+  <div class="today-grid">
+    <div class="today-card">
+      <h3>1회차 · 컴퓨터 첫걸음</h3>
+      <p>Windows 화면 구성, 마우스 사용, 파일과 폴더, 파일 탐색기를 익혀봅니다.</p>
+      <a class="btn" href="#">핸드아웃 받기</a>
+      <a class="btn secondary" href="#">예제파일 받기</a>
+    </div>
+    <div class="today-card">
+      <h3>오늘의 목표</h3>
+      <p>✔ 바탕화면과 작업표시줄 알아보기<br>✔ 폴더 만들기와 이름 변경하기<br>✔ 파일 탐색기로 다시 찾아오기<br>✔ 마우스 기본·심화 연습하기</p>
+    </div>
+  </div>
+</section>
+
+<section id="practice">
+  <h2>🎮 컴퓨터 연습실</h2>
+  <p class="desc">설명을 들은 뒤 직접 눌러보며 연습하세요.</p>
+  <div class="practice-grid">
+    <div class="practice">
+      <h3>🖱️ 마우스 기본 연습</h3>
+      <p>클릭, 더블클릭, 오른쪽 클릭, 드래그, 스크롤을 연습합니다.</p>
+      <a class="btn" href="1회차_마우스_연습페이지.html">기본 연습 시작</a>
+    </div>
+    <div class="practice">
+      <h3>🏆 마우스 심화 연습</h3>
+      <p>정확한 클릭, 드래그, 셀 선택, 스크롤 등 조금 더 어려운 미션에 도전합니다.</p>
+      <a class="btn success" href="1회차_마우스_심화연습_드래그개선.html">심화 연습 시작</a>
+    </div>
+  </div>
+</section>
+
+<section id="materials">
+  <h2>📥 차시별 수업자료</h2>
+  <p class="desc">수업이 진행되면 각 차시의 자료와 예제파일을 이곳에 추가합니다.</p>
+  <div class="classes">
+    <div class="class-card"><strong>1회차</strong><span>오리엔테이션 & 컴퓨터 첫걸음</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>2회차</strong><span>키보드 자리 익히기</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>3회차</strong><span>인터넷 검색과 파일 저장</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>4회차</strong><span>한글 시작과 글자 꾸미기</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>5회차</strong><span>한글 표 만들기 & 사진 넣기</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>6회차</strong><span>페이지 꾸미기 & 인쇄</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>7회차</strong><span>한글 실습 및 문서 완성</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>8회차</strong><span>엑셀 시작하기</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>9회차</strong><span>엑셀 표 만들기 기초</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>10회차</strong><span>자동 채우기와 셀 조절</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>11회차</strong><span>함수 & 데이터 관리</span><a href="#">자료 보기 →</a></div>
+    <div class="class-card"><strong>12회차</strong><span>엑셀 인쇄 마스터</span><a href="#">자료 보기 →</a></div>
+  </div>
+</section>
+
+<section id="upload">
+  <h2>📤 완성한 파일 제출하기</h2>
+  <p class="desc">수업에서 완성한 한글·엑셀 파일을 선생님께 제출할 때 사용합니다.</p>
+  <div class="upload-box">
+    <h3>오늘 만든 파일을 제출해볼까요?</h3>
+    <p>파일 이름은 가능하면 <b>이름_차시_과제명</b>으로 저장해 주세요.<br>예: <b>홍길동_4회차_안내문.hwp</b></p>
+    <a class="btn success" href="#">파일 제출하기</a>
+  </div>
+</section>
+
+<section>
+  <h2>📌 수업 중 꼭 기억하세요</h2>
+  <div class="notice">
+    <b>① 선생님이 설명할 때는 마우스에서 잠시 손을 뗍니다.</b><br>
+    ② 화면이 선생님과 다르면 더 누르지 말고 손을 듭니다.<br>
+    ③ 옆 사람 대신 마우스를 잡아주지 않습니다.<br>
+    ④ 파일을 저장할 때는 <b>이름과 저장 위치</b>를 꼭 확인합니다.<br>
+    ⑤ 공용 컴퓨터에서는 수업 후 개인 계정을 반드시 로그아웃합니다.
+  </div>
+</section>
+
+<footer>컴퓨터 기초 탄탄! 한글&엑셀 · 안산 스마트허브복합문화센터</footer>
+</div>
+</body>
+</html>
