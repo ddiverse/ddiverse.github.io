@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>컴퓨터 기초 탄탄! - 마우스 심화 연습</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fa;color:#222;font-family:"Noto Sans KR","Malgun Gothic",sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:24px 18px 60px}
+header,.card{background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.07)}
+header{padding:28px 30px;margin-bottom:18px}
+.badge{display:inline-block;background:#eee8ff;padding:7px 13px;border-radius:99px;font-weight:700;color:#5d3ca6}
+h1{margin:12px 0 6px;font-size:30px}.sub{margin:0;color:#666}
+.score{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}.score span{background:#f2f3f6;padding:9px 14px;border-radius:10px;font-weight:700}
+.card{padding:25px;margin:18px 0;border:2px solid transparent}.card.done{border-color:#49a84e}
+h2{margin:0 0 8px;font-size:22px}.guide{line-height:1.7;color:#555}
+.status{min-height:28px;margin-top:13px;font-weight:700}
+button{border:0;border-radius:12px;padding:13px 20px;font-size:17px;font-weight:700;cursor:pointer;background:#e9edf4}
+button:hover{transform:translateY(-1px)}
+.area{position:relative;border:3px dashed #c5ccd8;border-radius:15px;background:#fafbfc;height:230px;overflow:hidden}
+#moveTarget{position:absolute;width:95px;height:95px;border-radius:50%;background:#fff;border:4px solid #555;display:flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer}
+#selectBox{padding:18px;border:3px solid #ccd2dd;border-radius:15px;background:#fff;user-select:none}
+.selectable{display:inline-block;padding:8px 12px;margin:5px;border-radius:8px;background:#f0f2f6;cursor:pointer}
+.selectable.selected{outline:3px solid #555}
+.contextMenu{display:none;position:fixed;background:white;border:1px solid #aaa;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.2);padding:6px;z-index:10}
+.contextMenu div{padding:9px 28px;cursor:pointer}.contextMenu div:hover{background:#eee}
+#doubleArea{display:flex;gap:12px;flex-wrap:wrap}
+.smallBtn{min-width:140px}
+#drag2Area{height:270px;position:relative;border:3px solid #ccd2dd;border-radius:15px;background:#fafbfc;overflow:hidden}
+.drag2{position:absolute;width:65px;height:65px;border-radius:12px;background:white;border:3px solid #555;display:flex;align-items:center;justify-content:center;font-size:30px;cursor:grab;user-select:none}
+#drop2{position:absolute;right:30px;top:80px;width:180px;height:110px;border:4px dashed #777;border-radius:15px;display:flex;align-items:center;justify-content:center;font-weight:800}
+.table{border-collapse:collapse;width:100%;max-width:700px}.table td{border:2px solid #aaa;padding:14px;text-align:center;background:white;cursor:pointer;font-size:18px}.table td:hover{background:#eee}.table td.cellYellow{background:#ffe66d !important}.table td.cellRed{background:#ff8a80 !important}
+#resizeBox{height:120px;width:240px;border:4px solid #555;border-radius:10px;resize:both;overflow:auto;background:#fff;padding:12px}
+#scrollLong{height:190px;overflow:auto;border:3px solid #ccd2dd;border-radius:15px;padding:15px;background:#fafbfc}
+.long{height:700px;display:flex;flex-direction:column;justify-content:space-between;align-items:center}
+.progress{height:12px;background:#e4e7ec;border-radius:99px;overflow:hidden;margin-top:15px}.progress div{height:100%;width:0;background:#555;transition:.3s}
+.final{text-align:center;background:#fff;padding:30px;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.reset{background:#333;color:#fff;margin-top:14px}
+.tip{background:#fff8df;padding:14px;border-radius:12px;margin-top:16px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<span class="badge">심화 연습 · 마우스 실력 업그레이드</span>
+<h1>🖱️ 마우스 미션 10단계</h1>
+<p class="sub">기본 연습을 끝냈다면 이번에는 조금 더 어렵게 도전해보세요!</p>
+<div class="score"><span>완료: <b id="score">0</b> / 10</span><span>🏆 천천히 정확하게</span></div>
+<div class="progress"><div id="progress"></div></div>
+</header>
+
+<section class="card" id="m1">
+<h2>미션 1. 움직이는 목표 클릭</h2>
+<p class="guide">화면에서 움직이는 🎯를 찾아 <b>클릭</b>하세요. 3번 성공하면 완료입니다.</p>
+<div class="area" id="moveArea"><button id="moveTarget">🎯</button></div>
+<div class="status" id="s1">목표를 찾아 클릭하세요! (0/3)</div>
+</section>
+
+<section class="card" id="m2">
+<h2>미션 2. 정확한 더블클릭</h2>
+<p class="guide">아래 4개 중 <b>⭐ 별 아이콘</b>을 빠르게 더블클릭하세요.</p>
+<div id="doubleArea">
+<button class="smallBtn">🍎 사과</button><button class="smallBtn">⭐ 별</button>
+<button class="smallBtn">🍀 클로버</button><button class="smallBtn">🌙 달</button>
+</div>
+<div class="status" id="s2">별을 찾아 더블클릭하세요.</div>
+</section>
+
+<section class="card" id="m3">
+<h2>미션 3. 오른쪽 클릭으로 메뉴 열기</h2>
+<p class="guide">아래 글자에서 <b>오른쪽 클릭</b>하여 메뉴를 열고, 「열기」를 눌러보세요.</p>
+<div id="rightArea" style="padding:30px;text-align:center;border:3px dashed #c5ccd8;border-radius:15px;background:#fafbfc;font-size:21px;font-weight:700;cursor:context-menu">
+📄 오늘의 컴퓨터 연습 문서
+</div>
+<div class="status" id="s3">오른쪽 클릭 → 「열기」를 선택하는 순서입니다.</div>
+</section>
+
+<section class="card" id="m4">
+<h2>미션 4. 천천히 드래그해서 순서 맞추기</h2>
+<p class="guide">
+  숫자 카드를 <b>누른 상태로 천천히 끌어서</b> 오른쪽 큰 목표칸에 넣어보세요.
+  <br>💡 <b>중간에 마우스 버튼을 놓치면 카드가 그 자리에서 멈춥니다.</b> 다시 숫자 카드를 클릭해서 잡고 이어서 움직이면 됩니다.
+  목표칸은 넓게 만들어 두었습니다.
+</p>
+<div id="drag2Area" style="height:300px;position:relative;border:3px solid #ccd2dd;border-radius:15px;background:#fafbfc;overflow:hidden;">
+  <div class="drag2" id="d1" style="left:20px;top:25px">1</div>
+  <div class="drag2" id="d2" style="left:105px;top:25px">2</div>
+  <div class="drag2" id="d3" style="left:190px;top:25px">3</div>
+  <div class="drag2" id="d4" style="left:275px;top:25px">4</div>
+  <div id="drop2" style="position:absolute;right:20px;top:65px;width:230px;height:165px;border:4px dashed #777;border-radius:18px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:800;padding:15px;">
+    🎯<br>여기에 천천히<br>드래그해서 놓기
+  </div>
+</div>
+<div class="status" id="s4">1번부터 천천히 목표칸으로 옮겨보세요. (0/4)</div>
+<div class="tip" style="margin-top:12px;">
+  <b>드래그 팁</b>　① 숫자 위에 마우스를 올리기 → ② 왼쪽 버튼을 누른 채 잡기 → ③ 누르고 있는 동안 천천히 이동하기 → ④ 목표칸 안에서 버튼 놓기
+</div>
+</section>
+
+<section class="card" id="m5">
+<h2>미션 5. 클릭으로 셀 선택하기</h2>
+<p class="guide">표에서 <b>C3</b> 셀을 찾아 클릭하세요.</p>
+<table class="table" id="cellTable"></table>
+<div class="status" id="s5">C3를 찾아보세요. 클릭한 셀은 노란색으로 표시됩니다.</div>
+</section>
+
+<section class="card" id="m6">
+<h2>미션 6. 여러 개 선택하기</h2>
+<p class="guide">아래 단어 중 <b>컴퓨터와 관련된 단어 3개</b>를 클릭해서 선택하세요.</p>
+<div id="selectBox">
+<span class="selectable" data-ok="1">마우스</span>
+<span class="selectable">사과</span>
+<span class="selectable" data-ok="1">키보드</span>
+<span class="selectable">자동차</span>
+<span class="selectable" data-ok="1">모니터</span>
+<span class="selectable">딸기</span>
+</div>
+<div class="status" id="s6">정답 3개를 선택하세요.</div>
+</section>
+
+<section class="card" id="m7">
+<h2>미션 7. 마우스로 상자 크기 조절하기</h2>
+<p class="guide">
+  <b>1단계: 상자를 크게 만들기</b> → <b>2단계: 다시 작게 만들기</b>
+  <br>오른쪽 아래 모서리를 잡고 천천히 드래그하세요.
+</p>
+<div id="resizeBox">크기를 조절해보세요.<br><br>오른쪽 아래 모서리를 잡아주세요.</div>
+<div class="status" id="s7">1단계: 상자를 가로 300px 이상으로 크게 만들어보세요.</div>
+<div class="tip" style="margin-top:12px;">💡 모서리에 마우스를 가져가면 ↘ 모양으로 바뀝니다. 그때 누른 채 움직여보세요.</div>
+</section>
+
+<section class="card" id="m8">
+<h2>미션 8. 세로 스크롤 & 가로 스크롤</h2>
+
+<p class="guide"><b>1단계 · 세로 스크롤</b> — 마우스 휠을 아래로 내려서 「세로 성공!」을 찾아보세요.</p>
+<div id="verticalScroll" style="height:180px;overflow-y:auto;overflow-x:hidden;border:3px solid #ccd2dd;border-radius:15px;padding:15px;background:#fafbfc;">
+  <div style="height:550px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;">
+    <b>⬆️ 세로 스크롤 시작</b><span>아래로 내려보세요.</span><span>조금 더 내려보세요.</span><strong>🎉 세로 성공!</strong>
+  </div>
+</div>
+
+<p class="guide" style="margin-top:22px;"><b>2단계 · 가로 스크롤</b> — 아래 상자를 <b>가로 방향으로</b> 움직여서 오른쪽의 「가로 성공!」을 찾아보세요.</p>
+<div id="horizontalScroll" style="height:145px;overflow-x:auto;overflow-y:hidden;border:3px solid #ccd2dd;border-radius:15px;padding:15px;background:#fafbfc;">
+  <div style="width:850px;height:90px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;">
+    <b>⬅️ 가로 스크롤 시작</b><span>오른쪽으로 이동하세요.</span><strong>🎉 가로 성공! ➡️</strong>
+  </div>
+</div>
+
+<div class="status" id="s8">1단계 세로 스크롤부터 시작하세요. (0/2)</div>
+</section>
+
+<section class="card" id="m9">
+<h2>미션 9. 클릭 순서 기억하기</h2>
+<p class="guide">숫자가 나타난 순서를 기억하세요. <b>잠시 후 버튼이 섞입니다.</b> 기억한 순서대로 클릭해보세요.</p>
+<div id="sequence"></div>
+<div class="status" id="s9">1번부터 시작하세요.</div>
+</section>
+
+<section class="card" id="m10">
+<h2>미션 10. 종합 미션</h2>
+<p class="guide">아래 파일 아이콘을 <b>한 번 클릭 → 오른쪽 클릭 → 메뉴에서 열기</b> 순서로 해보세요.</p>
+<button id="fileBtn" style="font-size:60px;background:white">📄</button>
+<div class="status" id="s10">1단계: 파일을 한 번 클릭하세요.</div>
+</section>
+
+<div class="final">
+<h2>🏆 마우스 심화 미션 완료!</h2>
+<p id="finalText">10개 미션에 도전해보세요.</p>
+<div class="tip"><b>오늘의 핵심</b><br>
+클릭 · 더블클릭 · 오른쪽 클릭 · 드래그 · 스크롤 · 여러 개 선택하기 · 크기 조절
+</div>
+<button class="reset" onclick="location.reload()">처음부터 다시 하기</button>
+</div>
+</div>
+
+<div class="contextMenu" id="menu">
+  <div id="menuSelect">선택하기</div>
+  <div id="menuOpen">열기</div>
+  <div id="menuRename">이름 바꾸기</div>
+  <div id="menuDelete">삭제하기</div>
+</div>
+
+<script>
+let doneSet=new Set();
+function done(n,msg){
+ if(!doneSet.has(n)){doneSet.add(n);document.getElementById("score").textContent=doneSet.size;document.getElementById("m"+n).classList.add("done");document.getElementById("progress").style.width=(doneSet.size*10)+"%";}
+ document.getElementById("s"+n).textContent="✅ "+msg;
+ if(doneSet.size===10)document.getElementById("finalText").textContent="축하합니다! 10개 심화 미션을 모두 완료했습니다. 👏";
+}
+
+let moveCount=0;
+const mt=document.getElementById("moveTarget"), ma=document.getElementById("moveArea");
+function moveTarget(){
+ mt.style.left=Math.random()*(ma.clientWidth-110)+"px";
+ mt.style.top=Math.random()*(ma.clientHeight-110)+"px";
+}
+mt.addEventListener("click",()=>{moveCount++;document.getElementById("s1").textContent=`클릭 성공! (${moveCount}/3)`;if(moveCount>=3)done(1,"움직이는 목표를 3번 모두 클릭했습니다!");moveTarget();});
+moveTarget();
+
+document.querySelectorAll("#doubleArea button").forEach((b,i)=>{
+ b.addEventListener("dblclick",()=>{if(i===1)done(2,"별을 정확하게 더블클릭했습니다!");else document.getElementById("s2").textContent="❌ 별을 더블클릭해야 합니다.";});
+});
+
+const rightArea=document.getElementById("rightArea"),menu=document.getElementById("menu");
+rightArea.addEventListener("contextmenu",e=>{
+  e.preventDefault();
+  menu.style.display="block";
+  menu.style.left=e.clientX+"px";
+  menu.style.top=e.clientY+"px";
+});
+document.getElementById("menuOpen").onclick=()=>{
+  menu.style.display="none";
+  done(3,"오른쪽 클릭으로 메뉴를 열고 「열기」를 선택했습니다!");
+};
+document.getElementById("menuSelect").onclick=()=>{
+  menu.style.display="none";
+  document.getElementById("s3").textContent="선택하기가 아니라 「열기」를 눌러야 합니다. 다시 도전해보세요.";
+};
+document.getElementById("menuRename").onclick=()=>{
+  menu.style.display="none";
+  document.getElementById("s3").textContent="이름 바꾸기는 이번 미션의 정답이 아닙니다. 다시 오른쪽 클릭해보세요.";
+};
+document.getElementById("menuDelete").onclick=()=>{
+  menu.style.display="none";
+  document.getElementById("s3").textContent="삭제하기는 위험한 기능입니다. 이번 미션에서는 「열기」를 선택하세요.";
+};
+document.addEventListener("click",e=>{if(!menu.contains(e.target)&&e.target!==rightArea)menu.style.display="none";});
+
+let dragged=null,placed=[];
+
+const dragArea=document.getElementById("drag2Area");
+const dragCards=document.querySelectorAll(".drag2");
+
+function stopDragging(el){
+  if(!el) return;
+  el.style.cursor="grab";
+  el.style.zIndex="1";
+  el.classList.remove("dragging-now");
+  dragged=null;
+}
+
+dragCards.forEach(el=>{
+  el.style.touchAction="none";
+
+  // 1. 마우스 왼쪽 버튼을 누른 순간에만 잡기 시작
+  el.addEventListener("pointerdown",e=>{
+    if(e.button!==0) return;
+
+    dragged=el;
+
+    const cardRect=el.getBoundingClientRect();
+    el.dataset.offsetX=e.clientX-cardRect.left;
+    el.dataset.offsetY=e.clientY-cardRect.top;
+
+    el.style.cursor="grabbing";
+    el.style.zIndex="10";
+    el.classList.add("dragging-now");
+
+    // 포인터가 카드 밖으로 나가도 '누르고 있는 동안만' 추적
+    try{ el.setPointerCapture(e.pointerId); }catch(err){}
+
+    e.preventDefault();
+  });
+
+  // 2. 왼쪽 버튼이 실제로 눌려 있을 때만 따라오기
+  el.addEventListener("pointermove",e=>{
+    if(dragged!==el) return;
+
+    // buttons 값에 왼쪽 버튼(1)이 없으면 손을 놓친 것으로 간주하고 즉시 멈춤
+    if((e.buttons & 1)!==1){
+      stopDragging(el);
+      return;
+    }
+
+    const areaRect=dragArea.getBoundingClientRect();
+    const w=el.offsetWidth;
+    const h=el.offsetHeight;
+
+    let x=e.clientX-areaRect.left-Number(el.dataset.offsetX||0);
+    let y=e.clientY-areaRect.top-Number(el.dataset.offsetY||0);
+
+    x=Math.max(0,Math.min(x,areaRect.width-w));
+    y=Math.max(0,Math.min(y,areaRect.height-h));
+
+    el.style.left=x+"px";
+    el.style.top=y+"px";
+  });
+
+  // 3. 손을 떼면 무조건 드래그 종료
+  el.addEventListener("pointerup",e=>{
+    if(dragged!==el) return;
+
+    const a=el.getBoundingClientRect();
+    const b=document.getElementById("drop2").getBoundingClientRect();
+
+    const cx=a.left+a.width/2;
+    const cy=a.top+a.height/2;
+    const inside=cx>b.left && cx<b.right && cy>b.top && cy<b.bottom;
+
+    try{ el.releasePointerCapture(e.pointerId); }catch(err){}
+
+    if(inside&&!placed.includes(el.id)){
+      placed.push(el.id);
+      el.style.display="none";
+      document.getElementById("s4").textContent=`배치 완료! (${placed.length}/4)`;
+
+      if(placed.length===4){
+        done(4,"4개의 숫자 카드를 모두 목표칸에 넣었습니다!");
+      }
+    }
+
+    stopDragging(el);
+  });
+
+  // 4. 드래그 중 포인터를 놓치거나 브라우저가 캡처를 잃으면 즉시 멈춤
+  el.addEventListener("pointercancel",()=>stopDragging(el));
+  el.addEventListener("lostpointercapture",()=>stopDragging(el));
+});
+
+// 카드 밖에서 마우스 버튼을 놓아도 즉시 종료
+document.addEventListener("pointerup",()=>{
+  if(dragged) stopDragging(dragged);
+});
+
+// 창 밖으로 나가거나 포커스를 잃어도 카드가 붙어있지 않도록 종료
+window.addEventListener("blur",()=>{
+  if(dragged) stopDragging(dragged);
+});
+
+// 마우스가 이동했는데 왼쪽 버튼이 눌려 있지 않으면 즉시 종료
+document.addEventListener("pointermove",e=>{
+  if(dragged && (e.buttons & 1)!==1){
+    stopDragging(dragged);
+  }
+});
+
+const table=document.getElementById("cellTable");
+for(let r=1;r<=4;r++){let tr=document.createElement("tr");for(let c=1;c<=5;c++){let td=document.createElement("td");td.textContent=String.fromCharCode(64+c)+r;td.dataset.target=(r===3&&c===3);td.onclick=()=>{
+  document.querySelectorAll("#cellTable td").forEach(x=>x.classList.remove("cellYellow","cellRed"));
+  if(td.dataset.target==="true"){
+    td.classList.add("cellYellow");
+    done(5,"정답입니다! C3 셀을 정확하게 선택했습니다.");
+  }else{
+    td.classList.add("cellRed");
+    document.getElementById("s5").textContent="❌ 잘못된 셀입니다. 빨간색으로 표시되었습니다. C3를 다시 찾아보세요.";
+  }
+};tr.appendChild(td)}table.appendChild(tr)}
+
+let selected=[];
+document.querySelectorAll(".selectable").forEach(el=>el.onclick=()=>{
+ el.classList.toggle("selected");
+ if(el.classList.contains("selected"))selected.push(el);else selected=selected.filter(x=>x!==el);
+ let ok=selected.filter(x=>x.dataset.ok==="1").length;
+ document.getElementById("s6").textContent=`정답 선택: ${ok}/3`;
+ if(selected.length===3){if(ok===3)done(6,"컴퓨터 관련 단어 3개를 모두 골랐습니다!");else document.getElementById("s6").textContent="❌ 다시 선택해보세요. 컴퓨터 관련 단어는 3개입니다.";}});
+
+const rb=document.getElementById("resizeBox");
+let resizeStage=0, largeWidth=rb.offsetWidth;
+new ResizeObserver(()=>{
+  const w=rb.offsetWidth;
+  if(resizeStage===0 && w>=300){
+    resizeStage=1;
+    document.getElementById("s7").textContent="✅ 1단계 성공! 이제 상자를 다시 가로 240px 이하로 작게 만들어보세요.";
+  } else if(resizeStage===1 && w<=240){
+    resizeStage=2;
+    done(7,"크게 만들기와 작게 만들기, 두 단계를 모두 완료했습니다!");
+  }
+}).observe(rb);
+
+let scroll8=[false,false];
+document.getElementById("verticalScroll").addEventListener("scroll",function(){
+  if(this.scrollTop+this.clientHeight>=this.scrollHeight-5&&!scroll8[0]){
+    scroll8[0]=true;
+    document.getElementById("s8").textContent="세로 성공! 이제 가로 스크롤도 해보세요. (1/2)";
+    if(scroll8[0]&&scroll8[1])done(8,"세로 스크롤과 가로 스크롤을 모두 완료했습니다!");
+  }
+});
+document.getElementById("horizontalScroll").addEventListener("scroll",function(){
+  if(this.scrollLeft+this.clientWidth>=this.scrollWidth-5&&!scroll8[1]){
+    scroll8[1]=true;
+    document.getElementById("s8").textContent="가로 성공! 두 가지 스크롤을 모두 완료했습니다. (2/2)";
+    if(scroll8[0]&&scroll8[1])done(8,"세로 스크롤과 가로 스크롤을 모두 완료했습니다!");
+  }
+});
+
+const seq=document.getElementById("sequence");
+let order=[1,2,3,4,5].sort(()=>Math.random()-0.5);
+let next=0;
+let buttonOrder=[1,2,3,4,5].sort(()=>Math.random()-0.5);
+document.getElementById("s9").textContent="클릭 순서: "+order.join(" → ");
+buttonOrder.forEach(num=>{
+  let b=document.createElement("button");
+  b.textContent=num;
+  b.style.margin="7px";
+  b.style.minWidth="58px";
+  b.onclick=()=>{
+    if(num===order[next]){
+      next++;
+      b.disabled=true;
+      document.getElementById("s9").textContent=`정답! ${next}/5 · 순서: ${order.join(" → ")}`;
+      if(next===5)done(9,"랜덤 숫자 순서를 모두 정확하게 클릭했습니다!");
+    }else{
+      document.getElementById("s9").textContent=`❌ 순서가 아닙니다. 다시 확인하세요: ${order.join(" → ")}`;
+    }
+  };
+  seq.appendChild(b);
+});
+
+let fileStep=0;const fb=document.getElementById("fileBtn");
+fb.onclick=()=>{if(fileStep===0){fileStep=1;document.getElementById("s10").textContent="2단계: 이제 파일에서 오른쪽 클릭하세요.";fb.style.outline="4px solid #555";}};
+fb.oncontextmenu=e=>{e.preventDefault();if(fileStep===1){fileStep=2;document.getElementById("s10").textContent="3단계: 오른쪽 클릭 메뉴가 열렸다고 생각하고 파일을 다시 클릭하세요.";menu.style.display="block";menu.style.left=e.clientX+"px";menu.style.top=e.clientY+"px";}};
+document.getElementById("menuOpen").addEventListener("click",()=>{
+  if(fileStep===2){
+    menu.style.display="none";
+    done(10,"클릭 → 오른쪽 클릭 → 열기 순서를 완료했습니다!");
+  }
+});
+</script>
+</body>
+</html>
