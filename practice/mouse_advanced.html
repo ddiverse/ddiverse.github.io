@@ -80,7 +80,7 @@ button:hover{transform:translateY(-1px)}
 <h2>미션 4. 천천히 드래그해서 순서 맞추기</h2>
 <p class="guide">
   숫자 카드를 <b>누른 상태로 천천히 끌어서</b> 오른쪽 큰 목표칸에 넣어보세요.
-  <br>💡 <b>중간에 마우스 버튼을 놓치면 카드가 그 자리에서 멈춥니다.</b> 다시 숫자 카드를 클릭해서 잡고 이어서 움직이면 됩니다.
+  <br>💡 <b>중간에 손을 놓아도 괜찮습니다.</b> 다시 카드를 잡아서 이어서 움직여도 됩니다.
   목표칸은 넓게 만들어 두었습니다.
 </p>
 <div id="drag2Area" style="height:300px;position:relative;border:3px solid #ccd2dd;border-radius:15px;background:#fafbfc;overflow:hidden;">
@@ -94,7 +94,7 @@ button:hover{transform:translateY(-1px)}
 </div>
 <div class="status" id="s4">1번부터 천천히 목표칸으로 옮겨보세요. (0/4)</div>
 <div class="tip" style="margin-top:12px;">
-  <b>드래그 팁</b>　① 숫자 위에 마우스를 올리기 → ② 왼쪽 버튼을 누른 채 잡기 → ③ 누르고 있는 동안 천천히 이동하기 → ④ 목표칸 안에서 버튼 놓기
+  <b>드래그 팁</b>　① 숫자 위에 마우스를 올리기 → ② 왼쪽 버튼을 누르기 → ③ 누른 채 천천히 이동하기 → ④ 목표칸 안에서 손 놓기
 </div>
 </section>
 
@@ -228,111 +228,23 @@ document.getElementById("menuDelete").onclick=()=>{
 document.addEventListener("click",e=>{if(!menu.contains(e.target)&&e.target!==rightArea)menu.style.display="none";});
 
 let dragged=null,placed=[];
-
-const dragArea=document.getElementById("drag2Area");
-const dragCards=document.querySelectorAll(".drag2");
-
-function stopDragging(el){
-  if(!el) return;
+document.querySelectorAll(".drag2").forEach(el=>{
+ el.addEventListener("pointerdown",e=>{dragged=el;el.setPointerCapture(e.pointerId);el.style.cursor="grabbing";});
+ el.addEventListener("pointermove",e=>{
+  if(!dragged)return;
+  const r=document.getElementById("drag2Area").getBoundingClientRect();
+  let x=e.clientX-r.left-32,y=e.clientY-r.top-32;
+  el.style.left=Math.max(0,Math.min(x,r.width-65))+"px";
+  el.style.top=Math.max(0,Math.min(y,r.height-65))+"px";
+ });
+ el.addEventListener("pointerup",()=>{
   el.style.cursor="grab";
-  el.style.zIndex="1";
-  el.classList.remove("dragging-now");
-  dragged=null;
-}
-
-dragCards.forEach(el=>{
-  el.style.touchAction="none";
-
-  // 1. 마우스 왼쪽 버튼을 누른 순간에만 잡기 시작
-  el.addEventListener("pointerdown",e=>{
-    if(e.button!==0) return;
-
-    dragged=el;
-
-    const cardRect=el.getBoundingClientRect();
-    el.dataset.offsetX=e.clientX-cardRect.left;
-    el.dataset.offsetY=e.clientY-cardRect.top;
-
-    el.style.cursor="grabbing";
-    el.style.zIndex="10";
-    el.classList.add("dragging-now");
-
-    // 포인터가 카드 밖으로 나가도 '누르고 있는 동안만' 추적
-    try{ el.setPointerCapture(e.pointerId); }catch(err){}
-
-    e.preventDefault();
-  });
-
-  // 2. 왼쪽 버튼이 실제로 눌려 있을 때만 따라오기
-  el.addEventListener("pointermove",e=>{
-    if(dragged!==el) return;
-
-    // buttons 값에 왼쪽 버튼(1)이 없으면 손을 놓친 것으로 간주하고 즉시 멈춤
-    if((e.buttons & 1)!==1){
-      stopDragging(el);
-      return;
-    }
-
-    const areaRect=dragArea.getBoundingClientRect();
-    const w=el.offsetWidth;
-    const h=el.offsetHeight;
-
-    let x=e.clientX-areaRect.left-Number(el.dataset.offsetX||0);
-    let y=e.clientY-areaRect.top-Number(el.dataset.offsetY||0);
-
-    x=Math.max(0,Math.min(x,areaRect.width-w));
-    y=Math.max(0,Math.min(y,areaRect.height-h));
-
-    el.style.left=x+"px";
-    el.style.top=y+"px";
-  });
-
-  // 3. 손을 떼면 무조건 드래그 종료
-  el.addEventListener("pointerup",e=>{
-    if(dragged!==el) return;
-
-    const a=el.getBoundingClientRect();
-    const b=document.getElementById("drop2").getBoundingClientRect();
-
-    const cx=a.left+a.width/2;
-    const cy=a.top+a.height/2;
-    const inside=cx>b.left && cx<b.right && cy>b.top && cy<b.bottom;
-
-    try{ el.releasePointerCapture(e.pointerId); }catch(err){}
-
-    if(inside&&!placed.includes(el.id)){
-      placed.push(el.id);
-      el.style.display="none";
-      document.getElementById("s4").textContent=`배치 완료! (${placed.length}/4)`;
-
-      if(placed.length===4){
-        done(4,"4개의 숫자 카드를 모두 목표칸에 넣었습니다!");
-      }
-    }
-
-    stopDragging(el);
-  });
-
-  // 4. 드래그 중 포인터를 놓치거나 브라우저가 캡처를 잃으면 즉시 멈춤
-  el.addEventListener("pointercancel",()=>stopDragging(el));
-  el.addEventListener("lostpointercapture",()=>stopDragging(el));
-});
-
-// 카드 밖에서 마우스 버튼을 놓아도 즉시 종료
-document.addEventListener("pointerup",()=>{
-  if(dragged) stopDragging(dragged);
-});
-
-// 창 밖으로 나가거나 포커스를 잃어도 카드가 붙어있지 않도록 종료
-window.addEventListener("blur",()=>{
-  if(dragged) stopDragging(dragged);
-});
-
-// 마우스가 이동했는데 왼쪽 버튼이 눌려 있지 않으면 즉시 종료
-document.addEventListener("pointermove",e=>{
-  if(dragged && (e.buttons & 1)!==1){
-    stopDragging(dragged);
+  const a=el.getBoundingClientRect(),b=document.getElementById("drop2").getBoundingClientRect();
+  if(a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top&&!placed.includes(el.id)){
+   placed.push(el.id);el.style.display="none";document.getElementById("s4").textContent=`배치 완료! (${placed.length}/4)`;
+   if(placed.length===4)done(4,"1, 2, 3, 4 카드를 모두 목표칸에 넣었습니다!");
   }
+ });
 });
 
 const table=document.getElementById("cellTable");
@@ -417,5 +329,15 @@ document.getElementById("menuOpen").addEventListener("click",()=>{
   }
 });
 </script>
+
+<div style="text-align:center; margin:36px 0 18px;">
+  <a href="../index.html"
+     style="display:inline-block; padding:13px 24px; border-radius:12px;
+            background:#333; color:#fff; text-decoration:none;
+            font-weight:800; font-size:16px;">
+    🏠 홈으로 돌아가기
+  </a>
+</div>
+
 </body>
 </html>
