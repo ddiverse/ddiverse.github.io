@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>타자 기본 연습</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#222; --muted:#666; --line:#d9dee8;
+  --accent:#3559a8; --ok:#2e7d32; --bad:#c62828; --key:#eef1f5; --active:#ffe66d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:"Malgun Gothic","Noto Sans KR",sans-serif;color:var(--text)}
+.wrap{max-width:1100px;margin:0 auto;padding:26px 18px 50px}
+header,.card,.keyboard-wrap,.final{background:var(--card);border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+header{padding:28px 30px;margin-bottom:18px}
+.badge{display:inline-block;background:#eef2ff;color:var(--accent);padding:7px 13px;border-radius:999px;font-weight:700;font-size:14px}
+h1{margin:12px 0 8px;font-size:30px}
+.sub{margin:0;color:var(--muted);line-height:1.7}
+.topbar{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.stat{background:#f3f5f8;padding:9px 13px;border-radius:10px;font-weight:700}
+.progress{height:12px;background:#e7e9ee;border-radius:999px;overflow:hidden;margin-top:14px}
+.progress>div{height:100%;width:0;background:#555;transition:.2s}
+.card{padding:26px;margin:18px 0;text-align:center}
+.stage-title{font-size:21px;font-weight:800;margin-bottom:8px}
+.target{font-size:74px;font-weight:900;margin:18px 0 8px;letter-spacing:4px}
+.hint{color:var(--muted);line-height:1.6}
+.input-box{margin:18px auto 0;max-width:520px}
+input{width:100%;font-size:30px;text-align:center;padding:15px;border:3px solid #cbd2de;border-radius:14px;outline:none}
+input:focus{border-color:#555}
+.status{min-height:32px;margin-top:14px;font-weight:800;font-size:18px}
+.ok{color:var(--ok)} .bad{color:var(--bad)}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}.modebar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}.modebtn{background:#e9edf4;color:#222}.modebtn.active{background:#3559a8;color:#fff}
+button{border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:700;cursor:pointer;background:#e9edf4}
+button.primary{background:#333;color:#fff}
+.keyboard-wrap{padding:24px;margin:18px 0;overflow-x:auto}
+.keyboard{min-width:850px}
+.row{display:flex;justify-content:center;gap:7px;margin:7px 0}
+.key{
+  width:58px;height:58px;background:var(--key);border:2px solid #cfd5df;border-bottom-width:4px;
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;
+  position:relative;
+}
+.key.wide{width:86px}.key.space{width:340px}
+.key.active{background:#ffd84d !important;border-color:#d19a00 !important;box-shadow:0 0 0 4px rgba(255,216,77,.38);transform:translateY(-2px) scale(1.06);color:#111}
+.key.home{
+  border-color:#3559a8;
+  box-shadow:0 0 0 2px rgba(53,89,168,.12);
+}
+.key.home::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:5px;
+  transform:translateX(-50%);
+  width:18px;
+  height:3px;
+  border-radius:999px;
+  background:#555;
+}
+.home-guide{
+  margin:16px auto 0;
+  max-width:720px;
+  padding:13px 16px;
+  border-radius:12px;
+  background:#fff8df;
+  text-align:center;
+  font-size:16px;
+  font-weight:700;
+  line-height:1.6;
+}
+
+.key .ko{position:absolute;right:5px;bottom:3px;font-size:12px;color:#444}.keyboard.ko-mode .key{font-size:18px;font-weight:800;color:#111;align-items:center;justify-content:center;padding:0}.keyboard.ko-mode .key:has(.ko){font-size:11px;font-weight:600;color:#777;align-items:flex-end;justify-content:flex-end;padding:0 6px 5px 0}.keyboard.ko-mode .key .ko{font-size:21px;font-weight:900;color:#111;left:9px;top:7px;right:auto;bottom:auto;transform:none}.keyboard.en-mode .key{font-size:18px;font-weight:800;color:#111;align-items:center;justify-content:center;padding:0}.keyboard.en-mode .key .ko{font-size:11px;font-weight:600;color:#777;right:5px;bottom:3px;left:auto;top:auto;transform:none}
+.legend{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:12px;color:var(--muted);font-size:14px}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:16px;height:16px;border-radius:4px;background:var(--active);border:1px solid #b79b00}
+.final{padding:26px;text-align:center}
+.tip{background:#fff8df;border-radius:12px;padding:14px;line-height:1.7;margin-top:12px}
+@media(max-width:600px){.target{font-size:56px}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="badge">2회차 · 타자 기본</span>
+  <h1>⌨️ 한글 자모 · 영문 알파벳 자리 연습</h1>
+  <p class="sub">화면에 나타난 글자와 같은 키를 눌러보세요. 가상 키보드에서 현재 눌러야 할 키가 노란색으로 표시됩니다.</p>
+  <div class="topbar">
+    <div class="stat">진행: <b id="progressText">1 / 1</b></div>
+    <div class="stat">맞음: <b id="correct">0</b></div>
+    <div class="stat">틀림: <b id="wrong">0</b></div>
+    <div class="stat">정확도: <b id="accuracy">100%</b></div>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+  <div class="modebar">
+    <button class="modebtn active" id="koreanMode">한글 연습</button>
+    <button class="modebtn" id="englishMode">영문 연습</button>
+  </div>
+</header>
+
+<section class="card">
+  <div class="stage-title" id="stageTitle">1단계. 한글 자음 연습</div>
+  <div class="hint" id="stageHint">화면에 보이는 자음을 같은 키로 입력하세요.</div>
+  <div class="target" id="target">ㄱ</div>
+
+  <div class="input-box">
+    <div id="typing" tabindex="0" style="width:100%;font-size:22px;text-align:center;padding:18px;border:3px solid #cbd2de;border-radius:14px;outline:none;background:#fff;">
+      이곳을 한 번 클릭한 뒤 키보드를 눌러보세요
+    </div>
+  </div>
+
+  <div class="status" id="status">천천히 정확하게 입력해보세요.</div>
+  <div class="actions">
+    <button id="next">다음 →</button>
+    <button id="reset">처음부터</button>
+  </div>
+</section>
+
+<section class="keyboard-wrap">
+  <div class="keyboard ko-mode" id="keyboard">
+    <div class="row">
+      <div class="key" data-code="Backquote">`</div>
+      <div class="key" data-code="Digit1">1</div>
+      <div class="key" data-code="Digit2">2</div>
+      <div class="key" data-code="Digit3">3</div>
+      <div class="key" data-code="Digit4">4</div>
+      <div class="key" data-code="Digit5">5</div>
+      <div class="key" data-code="Digit6">6</div>
+      <div class="key" data-code="Digit7">7</div>
+      <div class="key" data-code="Digit8">8</div>
+      <div class="key" data-code="Digit9">9</div>
+      <div class="key" data-code="Digit0">0</div>
+      <div class="key wide" data-code="Backspace">←</div>
+    </div>
+    <div class="row">
+      <div class="key wide">Tab</div>
+      <div class="key" data-code="KeyQ">Q<span class="ko">ㅂ</span></div>
+      <div class="key" data-code="KeyW">W<span class="ko">ㅈ</span></div>
+      <div class="key" data-code="KeyE">E<span class="ko">ㄷ</span></div>
+      <div class="key" data-code="KeyR">R<span class="ko">ㄱ</span></div>
+      <div class="key" data-code="KeyT">T<span class="ko">ㅅ</span></div>
+      <div class="key" data-code="KeyY">Y<span class="ko">ㅛ</span></div>
+      <div class="key" data-code="KeyU">U<span class="ko">ㅕ</span></div>
+      <div class="key" data-code="KeyI">I<span class="ko">ㅑ</span></div>
+      <div class="key" data-code="KeyO">O<span class="ko">ㅐ</span></div>
+      <div class="key" data-code="KeyP">P<span class="ko">ㅔ</span></div>
+    </div>
+    <div class="row">
+      <div class="key wide">Caps</div>
+      <div class="key" data-code="KeyA">A<span class="ko">ㅁ</span></div>
+      <div class="key" data-code="KeyS">S<span class="ko">ㄴ</span></div>
+      <div class="key" data-code="KeyD">D<span class="ko">ㅇ</span></div>
+      <div class="key home" data-code="KeyF">F<span class="ko">ㄹ</span></div>
+      <div class="key" data-code="KeyG">G<span class="ko">ㅎ</span></div>
+      <div class="key" data-code="KeyH">H<span class="ko">ㅗ</span></div>
+      <div class="key home" data-code="KeyJ">J<span class="ko">ㅓ</span></div>
+      <div class="key" data-code="KeyK">K<span class="ko">ㅏ</span></div>
+      <div class="key" data-code="KeyL">L<span class="ko">ㅣ</span></div>
+      <div class="key" data-code="Semicolon">;</div>
+      <div class="key wide" data-code="Enter">Enter</div>
+    </div>
+    <div class="row">
+      <div class="key wide">Shift</div>
+      <div class="key" data-code="KeyZ">Z<span class="ko">ㅋ</span></div>
+      <div class="key" data-code="KeyX">X<span class="ko">ㅌ</span></div>
+      <div class="key" data-code="KeyC">C<span class="ko">ㅊ</span></div>
+      <div class="key" data-code="KeyV">V<span class="ko">ㅍ</span></div>
+      <div class="key" data-code="KeyB">B<span class="ko">ㅠ</span></div>
+      <div class="key" data-code="KeyN">N<span class="ko">ㅜ</span></div>
+      <div class="key" data-code="KeyM">M<span class="ko">ㅡ</span></div>
+      <div class="key" data-code="Comma">,</div>
+      <div class="key" data-code="Period">.</div>
+      <div class="key wide">Shift</div>
+    </div>
+    <div class="row">
+      <div class="key wide">Ctrl</div>
+      <div class="key wide">Alt</div>
+      <div class="key space" data-code="Space">Space</div>
+      <div class="key wide">한/영</div>
+      <div class="key wide">Ctrl</div>
+    </div>
+  </div>
+  <div class="legend"><span><span class="dot"></span> 노란색으로 표시된 키를 눌러보세요.</span></div>
+  <div class="home-guide">☝️ <b>ㄹ(F)</b> · <b>ㅓ(J)</b>는 양손 검지의 기준키입니다.</div>
+</section>
+
+<div class="final">
+  <h2>🌱 기본은 속도보다 자리 익히기!</h2>
+  <div class="tip">한글이 입력되지 않으면 <b>한/영 키</b>를 눌러 한글 입력 상태로 바꾼 뒤 다시 입력하세요.</div>
+</div>
+</div>
+
+<script>
+const koreanPool = [
+  ["ㄱ","KeyR"],["ㄴ","KeyS"],["ㄷ","KeyE"],["ㄹ","KeyF"],["ㅁ","KeyA"],
+  ["ㅂ","KeyQ"],["ㅅ","KeyT"],["ㅇ","KeyD"],["ㅈ","KeyW"],["ㅊ","KeyC"],
+  ["ㅋ","KeyZ"],["ㅌ","KeyX"],["ㅍ","KeyV"],["ㅎ","KeyG"],
+  ["ㅏ","KeyK"],["ㅑ","KeyI"],["ㅓ","KeyJ"],["ㅕ","KeyU"],["ㅗ","KeyH"],
+  ["ㅛ","KeyY"],["ㅜ","KeyN"],["ㅠ","KeyB"],["ㅡ","KeyM"],["ㅣ","KeyL"],
+  ["ㅐ","KeyO"],["ㅔ","KeyP"]
+];
+
+const englishPool = [
+  ["A","KeyA"],["B","KeyB"],["C","KeyC"],["D","KeyD"],["E","KeyE"],
+  ["F","KeyF"],["G","KeyG"],["H","KeyH"],["I","KeyI"],["J","KeyJ"],
+  ["K","KeyK"],["L","KeyL"],["M","KeyM"],["N","KeyN"],["O","KeyO"],
+  ["P","KeyP"],["Q","KeyQ"],["R","KeyR"],["S","KeyS"],["T","KeyT"],
+  ["U","KeyU"],["V","KeyV"],["W","KeyW"],["X","KeyX"],["Y","KeyY"],["Z","KeyZ"]
+];
+
+function shuffle(arr){
+  const copy = arr.map(x => [...x]);
+  for(let i=copy.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+const E = id => document.getElementById(id);
+let currentMode = "ko";
+let currentItems = shuffle(koreanPool);
+let idx = 0;
+let correct = 0;
+let wrong = 0;
+let locked = false;
+
+function current(){ return currentItems[idx]; }
+
+function updateStats(){
+  const attempts = correct + wrong;
+  const acc = attempts === 0 ? 100 : Math.round(correct / attempts * 100);
+  E("correct").textContent = correct;
+  E("wrong").textContent = wrong;
+  E("accuracy").textContent = acc + "%";
+  E("progressText").textContent = Math.min(idx + 1, currentItems.length) + " / " + currentItems.length;
+  E("bar").style.width = (idx / currentItems.length * 100) + "%";
+}
+
+function highlight(code){
+  document.querySelectorAll(".key").forEach(k => k.classList.remove("active"));
+  const key = document.querySelector('.key[data-code="' + code + '"]');
+  if(key) key.classList.add("active");
+}
+
+function render(){
+  const [char, code] = current();
+  E("stageTitle").textContent = currentMode === "ko" ? "한글 자모 랜덤 연습" : "영문 알파벳 랜덤 연습";
+  E("stageHint").textContent = currentMode === "ko"
+    ? "자음과 모음이 랜덤으로 한 글자씩 나옵니다. 노란색 키를 눌러보세요."
+    : "알파벳이 랜덤으로 한 글자씩 나옵니다. 노란색 키를 눌러보세요.";
+  E("target").textContent = char;
+  E("status").textContent = "노란색으로 표시된 키를 눌러보세요.";
+  highlight(code);
+  updateStats();
+  locked = false;
+  setTimeout(() => E("typing").focus(), 0);
+}
+
+function advance(){
+  if(idx < currentItems.length - 1){
+    idx++;
+    render();
+  }else{
+    E("bar").style.width = "100%";
+    E("progressText").textContent = currentItems.length + " / " + currentItems.length;
+    E("status").innerHTML = currentMode === "ko"
+      ? '<span class="ok">🎉 한글 자모 연습을 모두 완료했습니다!</span>'
+      : '<span class="ok">🎉 영문 알파벳 연습을 모두 완료했습니다!</span>';
+    locked = true;
+  }
+}
+
+function switchMode(mode){
+  currentMode = mode;
+  currentItems = shuffle(mode === "ko" ? koreanPool : englishPool);
+  idx = 0; correct = 0; wrong = 0; locked = false;
+
+  E("koreanMode").classList.toggle("active", mode === "ko");
+  E("englishMode").classList.toggle("active", mode === "en");
+  E("keyboard").classList.toggle("ko-mode", mode === "ko");
+  E("keyboard").classList.toggle("en-mode", mode === "en");
+  render();
+}
+
+function resetPractice(){
+  currentItems = shuffle(currentMode === "ko" ? koreanPool : englishPool);
+  idx = 0; correct = 0; wrong = 0; locked = false;
+  render();
+}
+
+E("typing").addEventListener("keydown", e => {
+  if(locked) return;
+
+  // 브라우저 단축키나 특수키는 판정하지 않음
+  if(!e.code.startsWith("Key")) return;
+
+  e.preventDefault();
+
+  const [, expectedCode] = current();
+
+  if(e.code === expectedCode){
+    correct++;
+    locked = true;
+    updateStats();
+    E("status").innerHTML = '<span class="ok">✅ 맞았습니다!</span>';
+    setTimeout(advance, 220);
+  }else{
+    wrong++;
+    updateStats();
+    E("status").innerHTML = '<span class="bad">❌ 다른 키입니다. 노란색 키를 다시 확인해보세요.</span>';
+  }
+});
+
+E("next").addEventListener("click", advance);
+E("reset").addEventListener("click", resetPractice);
+E("koreanMode").addEventListener("click", () => switchMode("ko"));
+E("englishMode").addEventListener("click", () => switchMode("en"));
+
+document.addEventListener("click", e => {
+  if(!e.target.closest("button")){
+    setTimeout(() => E("typing").focus(), 0);
+  }
+});
+
+window.addEventListener("focus", () => {
+  setTimeout(() => E("typing").focus(), 0);
+});
+
+switchMode("ko");
+</script>
+</body>
+</html>

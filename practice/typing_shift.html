@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>윗글쇠 Shift 연습</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#222; --muted:#666; --line:#d9dee8;
+  --accent:#3559a8; --yellow:#ffd84d; --yellow-border:#c79400;
+  --blue:#3559a8; --ok:#2e7d32; --bad:#c62828; --key:#eef1f5;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:"Malgun Gothic","Noto Sans KR",sans-serif;color:var(--text)}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 18px 55px}
+header,.card,.keyboard-wrap,.guidebox{background:#fff;border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+header{padding:28px 30px;margin-bottom:18px}
+.badge{display:inline-block;background:#eef2ff;color:var(--accent);padding:7px 13px;border-radius:999px;font-size:14px;font-weight:800}
+h1{margin:12px 0 8px;font-size:30px}
+.sub{margin:0;color:var(--muted);line-height:1.7}
+.modebar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.modebtn{border:0;border-radius:11px;padding:11px 16px;font-size:16px;font-weight:800;cursor:pointer;background:#e9edf4;color:#222}
+.modebtn.active{background:var(--accent);color:#fff}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.stat{background:#f3f5f8;border-radius:10px;padding:9px 13px;font-weight:700}
+.progress{height:11px;background:#e7e9ee;border-radius:999px;overflow:hidden;margin-top:14px}
+.progress>div{height:100%;width:0;background:#555;transition:.2s}
+.card{padding:28px;text-align:center;margin-bottom:18px}
+.stage-title{font-size:21px;font-weight:800}
+.hint{margin-top:7px;color:var(--muted);line-height:1.7}
+.target{font-size:76px;font-weight:900;letter-spacing:4px;margin:20px 0 8px}
+.combo{font-size:18px;font-weight:800;color:var(--accent);margin-top:6px}
+.focuspad{max-width:520px;margin:20px auto 0;padding:18px;border:3px solid #cbd2de;border-radius:14px;background:#fff;font-size:19px;font-weight:700;outline:none}
+.focuspad:focus{border-color:#555}
+.status{min-height:30px;margin-top:14px;font-size:18px;font-weight:800}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+.actions button{border:0;border-radius:11px;padding:12px 18px;font-size:16px;font-weight:700;cursor:pointer;background:#e9edf4}
+.keyboard-wrap{padding:24px;margin-bottom:18px;overflow-x:auto}
+.keyboard{min-width:900px}
+.row{display:flex;justify-content:center;gap:7px;margin:7px 0}
+.key{
+  position:relative;width:58px;height:58px;background:var(--key);border:2px solid #cfd5df;border-bottom-width:4px;
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800
+}
+.key.wide{width:92px}.key.space{width:330px}
+.key .shifted{position:absolute;left:7px;top:4px;font-size:12px;color:#555}
+.key .ko{position:absolute;right:5px;bottom:3px;font-size:12px;color:#555}
+.keyboard.ko-mode .key[data-code^="Key"]{
+  font-size:11px;font-weight:600;color:#777;
+  align-items:flex-end;justify-content:flex-end;padding:0 6px 5px 0;
+}
+.keyboard.ko-mode .key[data-code^="Key"] .ko{
+  font-size:21px;font-weight:900;color:#111;
+  left:9px;top:7px;right:auto;bottom:auto;
+}
+.keyboard.en-mode .key[data-code^="Key"]{
+  font-size:18px;font-weight:800;color:#111;
+  align-items:center;justify-content:center;padding:0;
+}
+.keyboard.en-mode .key[data-code^="Key"] .ko{
+  font-size:11px;font-weight:600;color:#777;
+  right:5px;bottom:3px;left:auto;top:auto;
+}
+
+.key.target-key{
+  background:var(--yellow)!important;
+  border-color:var(--yellow-border)!important;
+  box-shadow:0 0 0 4px rgba(255,216,77,.35);
+  transform:translateY(-2px) scale(1.05)
+}
+.key.shift-key{
+  background:#dfe8ff!important;
+  border-color:var(--blue)!important;
+  box-shadow:0 0 0 3px rgba(53,89,168,.18);
+  color:#183b8e
+}
+.legend{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:14px;color:var(--muted);font-size:14px}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:16px;height:16px;border-radius:4px;border:1px solid}
+.dot.yellow{background:var(--yellow);border-color:var(--yellow-border)}
+.dot.blue{background:#dfe8ff;border-color:var(--blue)}
+.guidebox{padding:22px 26px;line-height:1.8}
+kbd{background:#fff;border:1px solid #aaa;border-bottom-width:3px;border-radius:6px;padding:3px 8px;font-family:inherit;font-weight:800}
+@media(max-width:600px){h1{font-size:26px}.target{font-size:58px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="badge">2회차 · 윗글쇠</span>
+  <h1>⬆️ 윗글쇠 Shift 연습</h1>
+  <p class="sub">한글 연습에서는 기호와 쌍자음·Shift 모음이, 영문 연습에서는 기호와 영문 대문자가 랜덤으로 나옵니다.</p>
+
+  <div class="modebar">
+    <button class="modebtn active" data-mode="ko">한글 연습</button>
+    <button class="modebtn" data-mode="en">영문 연습</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat">진행: <b id="progressText">1 / 1</b></div>
+    <div class="stat">맞음: <b id="correct">0</b></div>
+    <div class="stat">틀림: <b id="wrong">0</b></div>
+    <div class="stat">정확도: <b id="accuracy">100%</b></div>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
+</header>
+
+<section class="card">
+  <div class="stage-title" id="stageTitle">기호 연습</div>
+  <div class="hint" id="hint">화면의 기호를 만들려면 파란 Shift와 노란 키를 함께 눌러보세요.</div>
+  <div class="target" id="target">!</div>
+  <div class="combo" id="combo">Shift + 1</div>
+
+  <div class="focuspad" id="focuspad" tabindex="0">이곳을 한 번 클릭한 뒤 키보드를 눌러보세요.</div>
+  <div class="status" id="status" style="display:none"></div>
+
+  <div class="actions">
+    <button id="skip">다음 문제</button>
+    <button id="reset">처음부터</button>
+  </div>
+</section>
+
+<section class="keyboard-wrap">
+  <div class="keyboard ko-mode" id="keyboard">
+    <div class="row">
+      <div class="key" data-code="Backquote"><span class="shifted">~</span>`</div>
+      <div class="key" data-code="Digit1"><span class="shifted">!</span>1</div>
+      <div class="key" data-code="Digit2"><span class="shifted">@</span>2</div>
+      <div class="key" data-code="Digit3"><span class="shifted">#</span>3</div>
+      <div class="key" data-code="Digit4"><span class="shifted">$</span>4</div>
+      <div class="key" data-code="Digit5"><span class="shifted">%</span>5</div>
+      <div class="key" data-code="Digit6"><span class="shifted">^</span>6</div>
+      <div class="key" data-code="Digit7"><span class="shifted">&amp;</span>7</div>
+      <div class="key" data-code="Digit8"><span class="shifted">*</span>8</div>
+      <div class="key" data-code="Digit9"><span class="shifted">(</span>9</div>
+      <div class="key" data-code="Digit0"><span class="shifted">)</span>0</div>
+      <div class="key wide">Backspace</div>
+    </div>
+    <div class="row">
+      <div class="key wide">Tab</div>
+      <div class="key" data-code="KeyQ">Q<span class="ko">ㅂ</span></div>
+      <div class="key" data-code="KeyW">W<span class="ko">ㅈ</span></div>
+      <div class="key" data-code="KeyE">E<span class="ko">ㄷ</span></div>
+      <div class="key" data-code="KeyR">R<span class="ko">ㄱ</span></div>
+      <div class="key" data-code="KeyT">T<span class="ko">ㅅ</span></div>
+      <div class="key" data-code="KeyY">Y<span class="ko">ㅛ</span></div>
+      <div class="key" data-code="KeyU">U<span class="ko">ㅕ</span></div>
+      <div class="key" data-code="KeyI">I<span class="ko">ㅑ</span></div>
+      <div class="key" data-code="KeyO">O<span class="ko">ㅐ</span></div>
+      <div class="key" data-code="KeyP">P<span class="ko">ㅔ</span></div>
+    </div>
+    <div class="row">
+      <div class="key wide">Caps</div>
+      <div class="key" data-code="KeyA">A<span class="ko">ㅁ</span></div>
+      <div class="key" data-code="KeyS">S<span class="ko">ㄴ</span></div>
+      <div class="key" data-code="KeyD">D<span class="ko">ㅇ</span></div>
+      <div class="key" data-code="KeyF">F<span class="ko">ㄹ</span></div>
+      <div class="key" data-code="KeyG">G<span class="ko">ㅎ</span></div>
+      <div class="key" data-code="KeyH">H<span class="ko">ㅗ</span></div>
+      <div class="key" data-code="KeyJ">J<span class="ko">ㅓ</span></div>
+      <div class="key" data-code="KeyK">K<span class="ko">ㅏ</span></div>
+      <div class="key" data-code="KeyL">L<span class="ko">ㅣ</span></div>
+      <div class="key" data-code="Semicolon"><span class="shifted">:</span>;</div>
+      <div class="key wide">Enter</div>
+    </div>
+    <div class="row">
+      <div class="key wide" data-code="ShiftLeft">Shift</div>
+      <div class="key" data-code="KeyZ">Z<span class="ko">ㅋ</span></div>
+      <div class="key" data-code="KeyX">X<span class="ko">ㅌ</span></div>
+      <div class="key" data-code="KeyC">C<span class="ko">ㅊ</span></div>
+      <div class="key" data-code="KeyV">V<span class="ko">ㅍ</span></div>
+      <div class="key" data-code="KeyB">B<span class="ko">ㅠ</span></div>
+      <div class="key" data-code="KeyN">N<span class="ko">ㅜ</span></div>
+      <div class="key" data-code="KeyM">M<span class="ko">ㅡ</span></div>
+      <div class="key" data-code="Comma"><span class="shifted">&lt;</span>,</div>
+      <div class="key" data-code="Period"><span class="shifted">&gt;</span>.</div>
+      <div class="key" data-code="Slash"><span class="shifted">?</span>/</div>
+      <div class="key wide" data-code="ShiftRight">Shift</div>
+    </div>
+    <div class="row">
+      <div class="key wide">Ctrl</div>
+      <div class="key wide">Alt</div>
+      <div class="key space">Space</div>
+      <div class="key wide">한/영</div>
+      <div class="key wide">Ctrl</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot blue"></span> 함께 누를 Shift 키</span>
+    <span><span class="dot yellow"></span> 눌러야 할 문자 키</span>
+  </div>
+</section>
+
+<section class="guidebox">
+  <b>💡 윗글쇠 사용법</b><br>
+  <span><kbd>Shift</kbd>를 누른 상태에서 다른 키를 함께 누르면 윗글쇠가 입력됩니다.</span><br>
+  가능하면 <b>문자 키를 누르는 손의 반대쪽 Shift</b>를 사용해보세요.<br>
+  예) 왼손으로 <b>A</b>를 누를 때 → 오른쪽 Shift / 오른손으로 <b>P</b>를 누를 때 → 왼쪽 Shift
+</section>
+
+</div>
+
+<script>
+const symbolItems = [
+  ["!","Digit1","1"],["@","Digit2","2"],["#","Digit3","3"],["$","Digit4","4"],["%","Digit5","5"],
+  ["^","Digit6","6"],["&","Digit7","7"],["*","Digit8","8"],["(","Digit9","9"],[")","Digit0","0"],
+  ["~","Backquote","`"],[":","Semicolon",";"],["<","Comma",","],[">","Period","."],["?","Slash","/"]
+];
+
+const englishItems = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(ch => [ch,"Key"+ch,ch.toLowerCase()]);
+
+const koreanItems = [
+  ["ㄲ","KeyR","ㄱ"],["ㄸ","KeyE","ㄷ"],["ㅃ","KeyQ","ㅂ"],["ㅆ","KeyT","ㅅ"],["ㅉ","KeyW","ㅈ"],
+  ["ㅒ","KeyO","ㅐ"],["ㅖ","KeyP","ㅔ"]
+];
+
+function shuffle(arr){
+  const copy = arr.map(x=>[...x]);
+  for(let i=copy.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [copy[i],copy[j]]=[copy[j],copy[i]];
+  }
+  return copy;
+}
+
+const E=id=>document.getElementById(id);
+
+let mode="ko";
+let items=[];
+let idx=0, correct=0, wrong=0, locked=false;
+let shiftDown={left:false,right:false};
+
+const leftHandCodes = new Set([
+  "Digit1","Digit2","Digit3","Digit4","Digit5",
+  "KeyQ","KeyW","KeyE","KeyR","KeyT",
+  "KeyA","KeyS","KeyD","KeyF","KeyG",
+  "KeyZ","KeyX","KeyC","KeyV","KeyB",
+  "Backquote"
+]);
+
+function preferredShift(code){
+  return leftHandCodes.has(code) ? "ShiftRight" : "ShiftLeft";
+}
+
+function makeItems(){
+  return mode==="ko"
+    ? shuffle([...symbolItems, ...koreanItems])
+    : shuffle([...symbolItems, ...englishItems]);
+}
+
+function current(){ return items[idx]; }
+
+function clearHighlights(){
+  document.querySelectorAll(".key").forEach(k=>{
+    k.classList.remove("target-key","shift-key");
+  });
+}
+
+function updateStats(){
+  const attempts=correct+wrong;
+  const acc=attempts===0?100:Math.round(correct/attempts*100);
+  E("correct").textContent=correct;
+  E("wrong").textContent=wrong;
+  E("accuracy").textContent=acc+"%";
+  E("progressText").textContent=(idx+1)+" / "+items.length;
+  E("bar").style.width=(idx/items.length*100)+"%";
+}
+
+function render(){
+  const [display,code,base]=current();
+  const shiftCode=preferredShift(code);
+
+  clearHighlights();
+
+  const targetKey=document.querySelector('.key[data-code="'+code+'"]');
+  const shiftKey=document.querySelector('.key[data-code="'+shiftCode+'"]');
+
+  if(targetKey) targetKey.classList.add("target-key");
+  if(shiftKey) shiftKey.classList.add("shift-key");
+
+  E("target").textContent=display;
+  E("combo").textContent="Shift + "+base;
+
+  if(mode==="ko"){
+    E("stageTitle").textContent="한글 윗글쇠 랜덤 연습";
+    E("hint").textContent="기호와 한글 쌍자음·Shift 모음이 랜덤으로 한 문제씩 나옵니다.";
+  }else{
+    E("stageTitle").textContent="영문 윗글쇠 랜덤 연습";
+    E("hint").textContent="기호와 영문 대문자가 랜덤으로 한 문제씩 나옵니다.";
+  }
+
+  E("status").textContent="파란 Shift 키를 누른 상태에서 노란 키를 눌러보세요.";
+  locked=false;
+  updateStats();
+  setTimeout(()=>E("focuspad").focus(),0);
+}
+
+function next(){
+  if(idx<items.length-1){
+    idx++;
+    render();
+  }else{
+    E("bar").style.width="100%";
+    E("progressText").textContent=items.length+" / "+items.length;
+    E("status").innerHTML='<span class="ok">🎉 연습을 모두 완료했습니다!</span>';
+    locked=true;
+  }
+}
+
+function resetPractice(){
+  items=makeItems();
+  idx=0; correct=0; wrong=0; locked=false;
+  updateStats();
+  render();
+}
+
+function switchMode(nextMode){
+  mode=nextMode;
+  document.querySelectorAll(".modebtn").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.mode===mode);
+  });
+  E("keyboard").classList.toggle("ko-mode", mode==="ko");
+  E("keyboard").classList.toggle("en-mode", mode==="en");
+  resetPractice();
+}
+
+E("focuspad").addEventListener("keydown",e=>{
+  if(e.code==="ShiftLeft"){shiftDown.left=true;return;}
+  if(e.code==="ShiftRight"){shiftDown.right=true;return;}
+  if(locked) return;
+
+  const validCode =
+    e.code.startsWith("Key") ||
+    e.code.startsWith("Digit") ||
+    ["Backquote","Semicolon","Comma","Period","Slash"].includes(e.code);
+
+  if(!validCode) return;
+
+  e.preventDefault();
+
+  const [,expectedCode] = current();
+  const expectedShift = preferredShift(expectedCode);
+  const correctShift =
+    expectedShift==="ShiftLeft" ? shiftDown.left : shiftDown.right;
+
+  if(e.code===expectedCode && correctShift){
+    correct++;
+    locked=true;
+    updateStats();
+    E("status").innerHTML='<span class="ok">✅ 정확합니다!</span>';
+    setTimeout(next,180);
+  }else{
+    wrong++;
+    updateStats();
+    E("status").innerHTML='<span class="bad">❌ 파란 Shift와 노란 키를 함께 눌러보세요.</span>';
+  }
+});
+
+E("focuspad").addEventListener("keyup",e=>{
+  if(e.code==="ShiftLeft") shiftDown.left=false;
+  if(e.code==="ShiftRight") shiftDown.right=false;
+});
+
+window.addEventListener("blur",()=>{
+  shiftDown.left=false;
+  shiftDown.right=false;
+});
+
+document.querySelectorAll(".modebtn").forEach(btn=>{
+  btn.addEventListener("click",()=>switchMode(btn.dataset.mode));
+});
+
+E("skip").addEventListener("click",next);
+E("reset").addEventListener("click",resetPractice);
+
+document.addEventListener("click",e=>{
+  if(!e.target.closest("button")){
+    setTimeout(()=>E("focuspad").focus(),0);
+  }
+});
+
+switchMode("ko");
+</script>
+
+</body>
+</html>
